@@ -1,0 +1,14 @@
+SOCKSPort 0
+SOCKSPolicy reject *
+ExitRelay 0
+RunAsDaemon 0
+
+## UseBridges 1
+## ClientTransportPlugin obfs4 exec /usr/bin/obfs4proxy managed
+## bridge obfs4 84.183.227.185:42313 B6C3FBE611A272F90995D3C689716FA521EC7308 cert=ZJR9BPWrm8zR2fh6BDr/hmJs0tiD9zO6xC8bWcDwbKiJXIPSlLYRfdfE8eh2knnojKSvKA iat-mode=0
+
+DataDirectory /tmp/tor
+HiddenServiceDir /burier/hidden_service
+HiddenServiceVersion 3
+HiddenServicePort 80 66.66.69.3:80
+Log notice stdout 
