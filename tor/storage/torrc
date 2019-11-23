@@ -1,0 +1,9 @@
+SOCKSPort 0
+SOCKSPolicy reject *
+ExitRelay 0
+
+DataDirectory /tmp/tor
+HiddenServiceDir /burier/hidden_service
+HiddenServiceVersion 3
+HiddenServicePort 80 66.66.69.3:80
+Log notice stdout 

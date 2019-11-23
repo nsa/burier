@@ -1,0 +1,45 @@
+# build tor from source code
+FROM ubuntu:16.04 as builder
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && \
+	apt-get install -y git
+
+WORKDIR /burier
+
+RUN git clone --branch tor-0.4.1.6 https://git.torproject.org/tor.git --single-branch --depth 1
+RUN apt-get install -y automake autotools-dev build-essential libboost-all-dev cmake libevent-dev libssl-dev
+RUN cd tor && ./autogen.sh  && ./configure --disable-asciidoc && make
+
+# generate vanity v3 tor address
+FROM alexhaydock/mkp224o as vanity
+WORKDIR /tmp
+ARG prefix
+RUN /usr/bin/mkp224o $prefix -n 1 -z -d /tmp/vanity
+RUN mkdir -p /tmp/keys
+RUN cd /tmp/vanity/$prefix* && cp -a * /tmp/keys
+
+# run tor
+FROM ubuntu:16.04
+
+WORKDIR /burier
+RUN apt-get update && \
+	apt-get install -y libboost-all-dev libevent-dev libssl-dev
+
+RUN useradd --system --uid 666 -M --shell /usr/sbin/nologin burier
+
+COPY --from=builder /burier/tor/src/app/tor .
+COPY --from=vanity /tmp/keys/. /burier/hidden_service/.
+
+ADD storage/torrc .
+ADD storage/torrc /etc/tor/torrc
+
+RUN chown 666:666 -R /burier/hidden_service
+RUN chown 666:666 /burier/torrc
+RUN chmod 700 -R /burier/hidden_service
+RUN chmod 600 /burier/hidden_service/hs_ed25519_secret_key
+RUN chmod 600 /burier/hidden_service/hs_ed25519_public_key
+
+USER burier
+
+ENTRYPOINT [ "./tor","-f", "torrc" ]

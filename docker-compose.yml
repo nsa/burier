@@ -1,0 +1,29 @@
+version: '3'
+services:
+  tor:
+    build:
+      context: tor
+      dockerfile: Dockerfile
+      args:
+        - prefix=bur
+    container_name: burier
+    networks: 
+      - burier
+
+  web:
+    image: php:7.2-apache
+    container_name: darkweb
+    volumes:
+      - ./web:/var/www/html
+    networks:
+      - burier
+    links:
+      - "tor:web"
+    depends_on:
+      - tor
+
+networks:
+  burier:
+    ipam:
+     config:
+       - subnet: 66.66.69.0/24
