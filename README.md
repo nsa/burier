@@ -29,7 +29,7 @@ Please checkout [docker-compose.yml](docker-compose.yml), [Dockerfile](tor/Docke
    - `cd burier`
 3. Copy your PHP and/or HTML web site into `web` directory.
 4. Initiate docker composer
-   - `sudo docker-compose up --build`
+   - `docker-compose up --build` (**SUDO** power may be needed)
 
 It will give you a **v3 tor address** with the prefix `bur`, you can change this prefix from `docker-compose.yml` file.
 
