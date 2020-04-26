@@ -7,7 +7,7 @@ RUN apt-get update && \
 
 WORKDIR /burier
 
-RUN git clone --branch tor-0.4.1.6 https://git.torproject.org/tor.git --single-branch --depth 1
+RUN git clone --branch release-0.4.2 https://github.com/torproject/tor.git --single-branch --depth 1
 RUN apt-get install -y automake autotools-dev build-essential libboost-all-dev cmake libevent-dev libssl-dev
 RUN cd tor && ./autogen.sh  && ./configure --disable-asciidoc && make
 
@@ -39,6 +39,8 @@ RUN chown 666:666 /burier/torrc
 RUN chmod 700 -R /burier/hidden_service
 RUN chmod 600 /burier/hidden_service/hs_ed25519_secret_key
 RUN chmod 600 /burier/hidden_service/hs_ed25519_public_key
+
+RUN echo "HERE IS YOUR TOR ADDRESS\n" && cat /burier/hidden_service/hostname 
 
 USER burier
 
